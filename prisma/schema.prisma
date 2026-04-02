@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Candidate {
+  id           String   @id @default(cuid())
+  name         String?
+  email        String?
+  phone        String?
+  linkedinUrl  String?
+  githubUrl    String?
+  portfolioUrl String?
+  rawText      String?  @db.Text
+  fileName     String
+  batchId      String?
+
+  score       Score?
+  skills      Skill[]
+  experiences Experience[]
+  educations  Education[]
+  batch       BatchUpload? @relation(fields: [batchId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([batchId])
+  @@index([email])
+  @@index([createdAt])
+}
+
+model Score {
+  id                String @id @default(cuid())
+  candidateId       String @unique
+  technicalSkills   Int    @default(0)
+  codingSkills      Int    @default(0)
+  softSkills        Int    @default(0)
+  overallJobFit     Int    @default(0)
+  technicalFeedback String? @db.Text
+  codingFeedback    String? @db.Text
+  softSkillsFeedback String? @db.Text
+  overallFeedback   String? @db.Text
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model Skill {
+  id          String @id @default(cuid())
+  candidateId String
+  name        String
+  category    String @default("technical")
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@index([category])
+}
+
+model Experience {
+  id          String  @id @default(cuid())
+  candidateId String
+  title       String?
+  company     String?
+  duration    String?
+  description String? @db.Text
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+}
+
+model Education {
+  id          String  @id @default(cuid())
+  candidateId String
+  degree      String?
+  institution String?
+  year        String?
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+}
+
+model BatchUpload {
+  id             String @id @default(cuid())
+  name           String @default("Untitled Batch")
+  totalResumes   Int    @default(0)
+  processedCount Int    @default(0)
+  status         String @default("processing")
+
+  candidates Candidate[]
+
+  createdAt DateTime @default(now())
+}

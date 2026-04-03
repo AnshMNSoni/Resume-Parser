@@ -6,7 +6,7 @@ By abstracting away the noise of high-volume candidate review, HireLens enforces
 
 ![HireLens Clean UI](https://img.shields.io/badge/UI-Minimalist%20Dark-14b8a6?style=flat-square) ![Next.js](https://img.shields.io/badge/Powered_by-Next.js_15-black?style=flat-square&logo=next.js) ![AI Context](https://img.shields.io/badge/AI_Engine-Google_Gemini-blue?style=flat-square)
 
-## ✨ Key Features
+## Key Features
 
 - **Context-Driven AI Scoring**: Provide a "Target Role" and "Required Skills", and the integrated Gemini 1.5 model will dynamically score resumes directly against your criteria, offering actionable feedback for Technical, Coding, and Soft Skills.
 - **Advanced Bulk Processing**: Native support for bulk PDF uploads and `.zip` archives. Batch large volumes of resumes seamlessly.
@@ -14,7 +14,7 @@ By abstracting away the noise of high-volume candidate review, HireLens enforces
 - **Minimalist, Human-Crafted UX**: Designed to reduce recruiter fatigue. Featuring a distraction-free dark interface, Emerald/Teal accents, glassmorphic elements, smooth micro-animations, and clean `lucide-react` iconography.
 - **Production-Ready Architecture**: Built natively on Next.js App Router, using Prisma ORM syncing automatically with remote PostgreSQL (e.g., Neon). Protected by strict serverless `nodejs` runtime forcing to gracefully handle standard library tasks (like `pdf-parse` buffers) without Edge runtime conflicts.
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Framework**: [Next.js 15](https://nextjs.org/) (App Router, Server Actions)
 - **Language**: TypeScript
@@ -25,7 +25,12 @@ By abstracting away the noise of high-volume candidate review, HireLens enforces
 - **Icons**: `lucide-react`
 - **PDF Processing**: `pdf-parse` + `adm-zip`
 
-## 🚀 Getting Started
+## Flow-Diagram
+<div align="center">
+  <img width="552" height="1710" alt="hirelens-flow-diagram" src="https://github.com/user-attachments/assets/ae633c4f-8f1b-4ac5-a6b1-d5135133b896" />
+</div>
+
+## Getting Started
 
 ### 1. Prerequisites
 Ensure you have Node.js (v18.17+) installed.
@@ -71,7 +76,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to view the dashboard!
 
-## 🌍 Deployment Options (Vercel)
+## Deployment Options (Vercel)
 
 HireLens is fine-tuned and fully compatible with Vercel serverless deployments.
 
@@ -80,7 +85,7 @@ HireLens is fine-tuned and fully compatible with Vercel serverless deployments.
 2. The core API processing routes explicitly establish `export const runtime = 'nodejs';` and `export const maxDuration = 60;` configs. This is completely intentional to support `fs` internal behaviors driven by `pdf-parse` inside Serverless Functions. *Do not change these configurations to `edge`.*
 3. Prisma successfully synchronizes typing on Vercel deployment thanks to the predefined `"postinstall": "prisma generate"` instruction nestled in `package.json`.
 
-## 🧠 Usage Workflow
+## Usage Workflow
 
 1. Move to **Upload Resume** (single file) or **Bulk Upload**.
 2. Supply your target recruitment context: **Target Role** (e.g. *Senior React Developer*) and **Required Skills** (e.g. *TypeScript, Next.js, WebGL*).
@@ -91,3 +96,5 @@ HireLens is fine-tuned and fully compatible with Vercel serverless deployments.
 ---
 
 *HireLens aims to augment — not replace — human decision-making in the recruitment lifecycle.*
+
+## Thankyou

@@ -8,17 +8,17 @@ export function SkillTag({
   const getCategoryColor = (cat: string) => {
     switch (cat) {
       case 'language':
-        return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+        return 'bg-white/10 text-white border-white/20';
       case 'framework':
-        return 'bg-purple-500/10 text-purple-400 border-purple-500/20';
+        return 'bg-dark-700 text-dark-100 border-dark-600';
       case 'tool':
-        return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+        return 'bg-dark-800 text-dark-300 border-white/5';
       case 'database':
-        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+        return 'bg-accent-emerald/10 text-accent-emerald border-accent-emerald/20';
       case 'cloud':
-        return 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
+        return 'bg-accent-teal/10 text-accent-teal border-accent-teal/20';
       case 'soft':
-        return 'bg-pink-500/10 text-pink-400 border-pink-500/20';
+        return 'bg-transparent text-dark-400 border-dark-600';
       default:
         return 'bg-white/5 text-dark-300 border-white/10';
     }

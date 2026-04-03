@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState, useRef } from 'react';
+import { UploadCloud, CheckCircle2 } from 'lucide-react';
 
 interface FileDropzoneProps {
   onFilesSelected: (files: File[]) => void;
@@ -107,46 +108,31 @@ export function FileDropzone({
       {/* Upload icon */}
       <div className={`mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 ${
         isDragging
-          ? 'bg-accent-cyan/10 scale-110'
-          : 'bg-accent-blue/10'
+          ? 'bg-accent-emerald/10 scale-110'
+          : 'bg-dark-800/50 border border-dark-600'
       }`}>
-        <svg
+        <UploadCloud
           className={`w-8 h-8 transition-all duration-300 ${
-            isDragging ? 'text-accent-cyan -translate-y-1' : 'text-accent-blue'
+            isDragging ? 'text-accent-emerald -translate-y-1' : 'text-dark-400'
           }`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
           strokeWidth={1.5}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-          />
-        </svg>
+        />
       </div>
 
-      <p className="text-base font-semibold text-dark-100 mb-1">{label}</p>
+      <p className="text-base font-semibold text-white mb-1">{label}</p>
       <p className="text-sm text-dark-400 mb-4">{sublabel}</p>
       <div className="flex items-center justify-center gap-4 text-xs text-dark-500">
         <span className="flex items-center gap-1.5">
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+          <CheckCircle2 className="w-3.5 h-3.5 text-accent-emerald" />
           PDF format
         </span>
         <span className="flex items-center gap-1.5">
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+          <CheckCircle2 className="w-3.5 h-3.5 text-accent-emerald" />
           Max {maxSizeMB}MB
         </span>
         {multiple && (
           <span className="flex items-center gap-1.5">
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <CheckCircle2 className="w-3.5 h-3.5 text-accent-emerald" />
             Multiple files
           </span>
         )}

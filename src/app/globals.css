@@ -15,16 +15,11 @@
   --color-dark-200: #b0b0c8;
   --color-dark-100: #d5d5e5;
 
-  --color-accent-blue: #6366f1;
-  --color-accent-purple: #8b5cf6;
-  --color-accent-cyan: #22d3ee;
   --color-accent-emerald: #34d399;
-  --color-accent-amber: #fbbf24;
-  --color-accent-rose: #f43f5e;
-  --color-accent-pink: #ec4899;
+  --color-accent-teal: #14b8a6;
 
   --color-score-excellent: #34d399;
-  --color-score-good: #6366f1;
+  --color-score-good: #14b8a6;
   --color-score-average: #fbbf24;
   --color-score-low: #f97316;
   --color-score-poor: #f43f5e;
@@ -70,37 +65,24 @@ body {
 }
 
 .gradient-card {
-  background: linear-gradient(145deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.04));
-  border: 1px solid rgba(99, 102, 241, 0.12);
+  background: var(--color-dark-800);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .gradient-accent {
-  background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-purple));
+  background: var(--color-accent-emerald);
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-accent-emerald);
 }
 
 .gradient-text-warm {
-  background: linear-gradient(135deg, var(--color-accent-amber), var(--color-accent-rose));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-accent-teal);
 }
 
 /* ─── Glow Effects ─── */
-.glow-blue {
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15), 0 0 60px rgba(99, 102, 241, 0.05);
-}
-
-.glow-purple {
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15), 0 0 60px rgba(139, 92, 246, 0.05);
-}
-
+/* ─── Glow Effects ─── */
 .glow-emerald {
   box-shadow: 0 0 20px rgba(52, 211, 153, 0.15), 0 0 60px rgba(52, 211, 153, 0.05);
 }
@@ -179,7 +161,7 @@ body {
 .score-poor { color: var(--color-score-poor); }
 
 .score-bg-excellent { background-color: rgba(52, 211, 153, 0.12); border-color: rgba(52, 211, 153, 0.3); }
-.score-bg-good { background-color: rgba(99, 102, 241, 0.12); border-color: rgba(99, 102, 241, 0.3); }
+.score-bg-good { background-color: rgba(20, 184, 166, 0.12); border-color: rgba(20, 184, 166, 0.3); }
 .score-bg-average { background-color: rgba(251, 191, 36, 0.12); border-color: rgba(251, 191, 36, 0.3); }
 .score-bg-low { background-color: rgba(249, 115, 22, 0.12); border-color: rgba(249, 115, 22, 0.3); }
 .score-bg-poor { background-color: rgba(244, 63, 94, 0.12); border-color: rgba(244, 63, 94, 0.3); }
@@ -211,14 +193,14 @@ body {
 
 .dropzone:hover,
 .dropzone.active {
-  border-color: var(--color-accent-blue);
-  background: rgba(99, 102, 241, 0.04);
-  box-shadow: inset 0 0 40px rgba(99, 102, 241, 0.03);
+  border-color: var(--color-accent-emerald);
+  background: rgba(52, 211, 153, 0.04);
+  box-shadow: inset 0 0 40px rgba(52, 211, 153, 0.03);
 }
 
 .dropzone.active {
-  border-color: var(--color-accent-cyan);
-  background: rgba(34, 211, 238, 0.04);
+  border-color: var(--color-accent-teal);
+  background: rgba(20, 184, 166, 0.04);
 }
 
 /* ─── Transitions ─── */

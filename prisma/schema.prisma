@@ -19,6 +19,9 @@ model Candidate {
   rawText      String?  @db.Text
   fileName     String
   batchId      String?
+  targetRole   String?  @db.Text
+  requiredSkills String? @db.Text
+  externalLinks String[] @default([])
 
   score       Score?
   skills      Skill[]
@@ -94,6 +97,8 @@ model BatchUpload {
   totalResumes   Int    @default(0)
   processedCount Int    @default(0)
   status         String @default("processing")
+  targetRole     String?  @db.Text
+  requiredSkills String? @db.Text
 
   candidates Candidate[]
 

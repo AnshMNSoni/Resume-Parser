@@ -5,6 +5,7 @@ export interface ExtractedContact {
   linkedinUrl: string | null;
   githubUrl: string | null;
   portfolioUrl: string | null;
+  externalLinks: string[];
 }
 
 export interface ExtractedExperience {
@@ -53,8 +54,11 @@ export interface CandidateProfile {
   linkedinUrl: string | null;
   githubUrl: string | null;
   portfolioUrl: string | null;
+  externalLinks: string[];
   fileName: string;
   rawText: string | null;
+  targetRole: string | null;
+  requiredSkills: string | null;
   score: {
     technicalSkills: number;
     codingSkills: number;

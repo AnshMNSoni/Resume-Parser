@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ScoreBadge } from '@/components/ui/ScoreBadge';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { Search, Filter, FolderOpen } from 'lucide-react';
 
 interface CandidateRow {
   id: string;
@@ -93,7 +94,7 @@ function CandidatesContent() {
   };
 
   const SortIcon = ({ column }: { column: string }) => (
-    <span className={`ml-1 inline-block transition-transform ${sortBy === column ? 'text-accent-blue' : 'text-dark-600'}`}>
+    <span className={`ml-1 inline-block transition-transform ${sortBy === column ? 'text-accent-emerald' : 'text-dark-600'}`}>
       {sortBy === column ? (sortOrder === 'asc' ? '↑' : '↓') : '↕'}
     </span>
   );
@@ -115,16 +116,14 @@ function CandidatesContent() {
       {/* Search & Filters Bar */}
       <div className="flex flex-col sm:flex-row gap-3 animate-slide-up">
         <div className="flex-1 relative">
-          <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-500" strokeWidth={2} />
           <input
             id="search-candidates"
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, email, or skills..."
-            className="w-full bg-dark-800/50 border border-dark-600 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-accent-blue/50 focus:ring-1 focus:ring-accent-blue/20 transition-all"
+            className="w-full bg-dark-800/50 border border-dark-600 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-accent-emerald/50 focus:ring-1 focus:ring-accent-emerald/20 transition-all"
           />
         </div>
         <button
@@ -132,22 +131,20 @@ function CandidatesContent() {
           onClick={() => setShowFilters(!showFilters)}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all ${
             hasActiveFilters
-              ? 'border-accent-blue/30 bg-accent-blue/5 text-accent-blue'
+              ? 'border-accent-emerald/30 bg-accent-emerald/5 text-accent-emerald'
               : 'border-dark-600 text-dark-300 hover:text-white hover:border-dark-500'
           }`}
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-          </svg>
+          <Filter className="w-4 h-4" strokeWidth={2} />
           Filters {hasActiveFilters && `(${Object.values(filters).filter((v) => v > 0).length})`}
         </button>
       </div>
 
       {/* Filter Panel */}
       {showFilters && (
-        <div className="gradient-card rounded-2xl p-5 animate-scale-in">
+        <div className="bg-dark-800/80 border border-white/5 rounded-2xl p-5 animate-scale-in">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xs font-semibold text-dark-200 uppercase tracking-wider">Minimum Score Thresholds</h3>
+            <h3 className="text-xs font-semibold text-white uppercase tracking-wider">Minimum Score Thresholds</h3>
             {hasActiveFilters && (
               <button
                 onClick={() => setFilters({ minTechnical: 0, minCoding: 0, minSoftSkills: 0, minJobFit: 0 })}
@@ -166,7 +163,7 @@ function CandidatesContent() {
             ].map((f) => (
               <div key={f.key}>
                 <label className="block text-[11px] text-dark-400 font-medium mb-1.5">
-                  {f.label}: <span className="text-accent-blue font-mono">{filters[f.key]}%</span>
+                  {f.label}: <span className="text-accent-emerald font-mono">{filters[f.key]}%</span>
                 </label>
                 <input
                   type="range"
@@ -175,7 +172,7 @@ function CandidatesContent() {
                   step={5}
                   value={filters[f.key]}
                   onChange={(e) => setFilters((prev) => ({ ...prev, [f.key]: parseInt(e.target.value) }))}
-                  className="w-full h-1.5 rounded-full appearance-none bg-dark-700 accent-accent-blue cursor-pointer"
+                  className="w-full h-1.5 rounded-full appearance-none bg-dark-700 accent-accent-emerald cursor-pointer"
                 />
               </div>
             ))}
@@ -197,23 +194,21 @@ function CandidatesContent() {
 
       {/* Table */}
       {loading ? (
-        <div className="gradient-card rounded-2xl p-12">
+        <div className="bg-dark-800/80 border border-white/5 rounded-2xl p-12">
           <LoadingSpinner size="lg" className="mx-auto" />
         </div>
       ) : candidates.length === 0 ? (
-        <div className="gradient-card rounded-2xl p-12 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-dark-700 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-dark-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
+        <div className="bg-dark-800/80 border border-white/5 rounded-2xl p-12 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-dark-900 border border-white/5 flex items-center justify-center mx-auto mb-4">
+            <FolderOpen className="w-8 h-8 text-dark-500" strokeWidth={1.5} />
           </div>
-          <p className="text-sm text-dark-300 mb-1">No candidates found</p>
+          <p className="text-sm font-semibold text-white mb-1">No candidates found</p>
           <p className="text-xs text-dark-500">
             {hasActiveFilters ? 'Try adjusting your filters' : 'Upload resumes to get started'}
           </p>
         </div>
       ) : (
-        <div className="gradient-card rounded-2xl overflow-hidden overflow-x-auto">
+        <div className="bg-dark-800/80 border border-white/5 rounded-2xl overflow-hidden overflow-x-auto">
           <table className="w-full min-w-[700px]">
             <thead>
               <tr className="border-b border-white/5">
@@ -264,7 +259,7 @@ function CandidatesContent() {
                 >
                   <td className="px-5 py-4">
                     <div>
-                      <p className="text-sm font-medium text-dark-100 group-hover:text-accent-blue transition-colors">
+                      <p className="text-sm font-medium text-white group-hover:text-accent-emerald transition-colors">
                         {c.name || c.fileName}
                       </p>
                       <p className="text-[11px] text-dark-500">{c.email || '—'}</p>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FileDropzone } from '@/components/ui/FileDropzone';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { Archive, FileText, X, AlertCircle } from 'lucide-react';
 
 export default function BulkUploadPage() {
   const router = useRouter();
@@ -12,6 +13,9 @@ export default function BulkUploadPage() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState({ current: 0, total: 0, status: '' });
+  
+  const [targetRole, setTargetRole] = useState('');
+  const [requiredSkills, setRequiredSkills] = useState('');
 
   const isZip = files.length === 1 && files[0].name.toLowerCase().endsWith('.zip');
 
@@ -25,6 +29,8 @@ export default function BulkUploadPage() {
     try {
       const formData = new FormData();
       formData.append('batchName', batchName || `Batch ${new Date().toLocaleDateString()}`);
+      formData.append('targetRole', targetRole);
+      formData.append('requiredSkills', requiredSkills);
 
       if (isZip) {
         formData.append('zip', files[0]);
@@ -73,20 +79,53 @@ export default function BulkUploadPage() {
         </p>
       </div>
 
-      {/* Batch Name */}
-      <div className="animate-slide-up">
-        <label htmlFor="batch-name" className="block text-xs font-semibold text-dark-300 mb-2 uppercase tracking-wider">
-          Batch Name (optional)
-        </label>
-        <input
-          id="batch-name"
-          type="text"
-          value={batchName}
-          onChange={(e) => setBatchName(e.target.value)}
-          placeholder="e.g., Frontend Developers Q1 2025"
-          disabled={uploading}
-          className="w-full bg-dark-800/50 border border-dark-600 rounded-xl px-4 py-3 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-accent-blue/50 focus:ring-1 focus:ring-accent-blue/20 transition-all disabled:opacity-50"
-        />
+      {/* Batch Setup */}
+      <div className="bg-dark-800/80 border border-white/5 rounded-2xl p-6 animate-slide-up space-y-4">
+        <div>
+          <label htmlFor="batch-name" className="block text-xs font-semibold text-white mb-2 uppercase tracking-wider">
+            Batch Name (optional)
+          </label>
+          <input
+            id="batch-name"
+            type="text"
+            value={batchName}
+            onChange={(e) => setBatchName(e.target.value)}
+            placeholder="e.g., Frontend Developers Q1 2025"
+            disabled={uploading}
+            className="w-full bg-dark-900 border border-dark-600 rounded-xl px-4 py-3 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-accent-emerald/50 focus:ring-1 focus:ring-accent-emerald/20 transition-all disabled:opacity-50"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="target-role" className="block text-xs font-semibold text-dark-300 mb-2 uppercase tracking-wider">
+              Target Role
+            </label>
+            <input
+              id="target-role"
+              type="text"
+              value={targetRole}
+              onChange={(e) => setTargetRole(e.target.value)}
+              placeholder="e.g., Senior Frontend Engineer"
+              disabled={uploading}
+              className="w-full bg-dark-900 border border-dark-600 rounded-xl px-4 py-3 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-accent-emerald/50 focus:ring-1 focus:ring-accent-emerald/20 transition-all disabled:opacity-50"
+            />
+          </div>
+          <div>
+            <label htmlFor="required-skills" className="block text-xs font-semibold text-dark-300 mb-2 uppercase tracking-wider">
+              Key Requirements
+            </label>
+            <input
+              id="required-skills"
+              type="text"
+              value={requiredSkills}
+              onChange={(e) => setRequiredSkills(e.target.value)}
+              placeholder="e.g., React, TypeScript, System Design"
+              disabled={uploading}
+              className="w-full bg-dark-900 border border-dark-600 rounded-xl px-4 py-3 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-accent-emerald/50 focus:ring-1 focus:ring-accent-emerald/20 transition-all disabled:opacity-50"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Upload Area */}
@@ -128,16 +167,12 @@ export default function BulkUploadPage() {
                   className="flex items-center gap-3 p-3 rounded-xl bg-dark-800/30 border border-white/[0.03]"
                 >
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                    isZip ? 'bg-amber-500/10' : 'bg-accent-blue/10'
+                    isZip ? 'bg-accent-teal/10' : 'bg-accent-emerald/10'
                   }`}>
                     {isZip ? (
-                      <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                      </svg>
+                      <Archive className="w-4 h-4 text-accent-teal" strokeWidth={1.5} />
                     ) : (
-                      <svg className="w-4 h-4 text-accent-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
+                      <FileText className="w-4 h-4 text-accent-emerald" strokeWidth={1.5} />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -149,9 +184,7 @@ export default function BulkUploadPage() {
                       onClick={() => removeFile(i)}
                       className="text-dark-500 hover:text-accent-rose transition-colors p-1"
                     >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
+                      <X className="w-4 h-4" strokeWidth={2} />
                     </button>
                   )}
                 </div>
@@ -188,9 +221,7 @@ export default function BulkUploadPage() {
             {/* Error */}
             {error && (
               <div className="flex items-start gap-3 p-4 rounded-xl bg-accent-rose/5 border border-accent-rose/20">
-                <svg className="w-5 h-5 text-accent-rose flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <AlertCircle className="w-5 h-5 text-accent-rose flex-shrink-0 mt-0.5" strokeWidth={2} />
                 <p className="text-sm text-accent-rose">{error}</p>
               </div>
             )}

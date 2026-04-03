@@ -25,10 +25,12 @@ Scoring Criteria:
 
 Be thorough but fair. Score generously for strong indicators but realistically for gaps.
 
+{{CONTEXT}}
+
 RESUME TEXT:
 `;
 
-export async function scoreResumeWithGemini(resumeText: string): Promise<ScoreResult> {
+export async function scoreResumeWithGemini(resumeText: string, targetRole: string | null = null, requiredSkills: string | null = null): Promise<ScoreResult> {
   const apiKey = env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -40,7 +42,12 @@ export async function scoreResumeWithGemini(resumeText: string): Promise<ScoreRe
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    const prompt = SCORING_PROMPT + resumeText.substring(0, 8000); // Limit text length
+    let contextBlock = '';
+    if (targetRole || requiredSkills) {
+      contextBlock = `\nRECRUITER CONTEXT:\n- Target Role: ${targetRole || 'Not specified'}\n- Required Skills: ${requiredSkills || 'Not specified'}\nPlease strictly evaluate the candidate's suitability against these specific requirements.\n`;
+    }
+
+    const prompt = SCORING_PROMPT.replace('{{CONTEXT}}', contextBlock) + resumeText.substring(0, 8000); // Limit text length
 
     const result = await model.generateContent(prompt);
     const response = result.response;

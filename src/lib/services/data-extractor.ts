@@ -74,11 +74,15 @@ export function extractContactInfo(text: string): ExtractedContact {
   const linkedinUrls = text.match(LINKEDIN_REGEX);
   const githubUrls = text.match(GITHUB_REGEX);
 
-  // Extract all URLs and filter out LinkedIn and GitHub
-  const allUrls = text.match(URL_REGEX) || [];
-  const portfolioUrl = allUrls.find(
-    (url) => !url.includes('linkedin.com') && !url.includes('github.com')
-  ) || null;
+  // Extract all URLs
+  const allUrls = Array.from(new Set(text.match(URL_REGEX) || []));
+  const excludedDomains = ['linkedin.com', 'github.com'];
+  const otherUrls = allUrls.filter((url) => {
+    const lowerUrl = url.toLowerCase();
+    return !excludedDomains.some((domain) => lowerUrl.includes(domain));
+  });
+
+  const portfolioUrl = otherUrls.length > 0 ? otherUrls[0] : null;
 
   // Extract name: heuristic - first non-empty line that looks like a name
   const lines = text.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
@@ -108,6 +112,7 @@ export function extractContactInfo(text: string): ExtractedContact {
     linkedinUrl: linkedinUrls?.[0] || null,
     githubUrl: githubUrls?.[0] || null,
     portfolioUrl,
+    externalLinks: otherUrls,
   };
 }
 

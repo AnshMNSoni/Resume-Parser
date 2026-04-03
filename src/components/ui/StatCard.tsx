@@ -19,14 +19,14 @@ export function StatCard({
 }: StatCardProps) {
   const colorMap = {
     blue: {
-      iconBg: 'bg-accent-blue/10',
-      iconText: 'text-accent-blue',
-      glow: 'hover:shadow-[0_0_30px_rgba(99,102,241,0.08)]',
+      iconBg: 'bg-accent-emerald/10',
+      iconText: 'text-accent-emerald',
+      glow: 'hover:shadow-[0_0_30px_rgba(52,211,153,0.08)]',
     },
     purple: {
-      iconBg: 'bg-accent-purple/10',
-      iconText: 'text-accent-purple',
-      glow: 'hover:shadow-[0_0_30px_rgba(139,92,246,0.08)]',
+      iconBg: 'bg-accent-teal/10',
+      iconText: 'text-accent-teal',
+      glow: 'hover:shadow-[0_0_30px_rgba(20,184,166,0.08)]',
     },
     emerald: {
       iconBg: 'bg-accent-emerald/10',
@@ -34,23 +34,23 @@ export function StatCard({
       glow: 'hover:shadow-[0_0_30px_rgba(52,211,153,0.08)]',
     },
     amber: {
-      iconBg: 'bg-accent-amber/10',
-      iconText: 'text-accent-amber',
-      glow: 'hover:shadow-[0_0_30px_rgba(251,191,36,0.08)]',
+      iconBg: 'bg-white/10',
+      iconText: 'text-white',
+      glow: 'hover:shadow-[0_0_30px_rgba(255,255,255,0.08)]',
     },
     cyan: {
-      iconBg: 'bg-accent-cyan/10',
-      iconText: 'text-accent-cyan',
-      glow: 'hover:shadow-[0_0_30px_rgba(34,211,238,0.08)]',
+      iconBg: 'bg-accent-teal/10',
+      iconText: 'text-accent-teal',
+      glow: 'hover:shadow-[0_0_30px_rgba(20,184,166,0.08)]',
     },
     rose: {
-      iconBg: 'bg-accent-rose/10',
-      iconText: 'text-accent-rose',
-      glow: 'hover:shadow-[0_0_30px_rgba(244,63,94,0.08)]',
+      iconBg: 'bg-white/5',
+      iconText: 'text-dark-200',
+      glow: 'hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]',
     },
   };
 
-  const c = colorMap[color];
+  const c = colorMap[color] || colorMap.emerald;
 
   return (
     <div

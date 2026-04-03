@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FileDropzone } from '@/components/ui/FileDropzone';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { FileText, AlertCircle, X, Search, Terminal, BarChart2 } from 'lucide-react';
 
 export default function UploadPage() {
   const router = useRouter();
@@ -11,6 +12,9 @@ export default function UploadPage() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState<string>('');
+  
+  const [targetRole, setTargetRole] = useState('');
+  const [requiredSkills, setRequiredSkills] = useState('');
 
   const handleUpload = async () => {
     if (!file) return;
@@ -22,6 +26,8 @@ export default function UploadPage() {
     try {
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('targetRole', targetRole);
+      formData.append('requiredSkills', requiredSkills);
 
       setProgress('Analyzing with AI...');
       const res = await fetch('/api/resume/upload', {
@@ -56,6 +62,41 @@ export default function UploadPage() {
         </p>
       </div>
 
+      {/* Recruiter Context */}
+      <div className="bg-dark-800/80 border border-white/5 rounded-2xl p-6 animate-slide-up" style={{ animationDelay: '50ms' }}>
+        <h2 className="text-sm font-semibold text-white mb-4">Role Context</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="target-role" className="block text-xs font-semibold text-dark-300 mb-2 uppercase tracking-wider">
+              Target Role
+            </label>
+            <input
+              id="target-role"
+              type="text"
+              value={targetRole}
+              onChange={(e) => setTargetRole(e.target.value)}
+              placeholder="e.g., Senior Frontend Engineer"
+              disabled={uploading}
+              className="w-full bg-dark-900 border border-dark-600 rounded-xl px-4 py-3 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-accent-emerald/50 focus:ring-1 focus:ring-accent-emerald/20 transition-all disabled:opacity-50"
+            />
+          </div>
+          <div>
+            <label htmlFor="required-skills" className="block text-xs font-semibold text-dark-300 mb-2 uppercase tracking-wider">
+              Key Requirements
+            </label>
+            <input
+              id="required-skills"
+              type="text"
+              value={requiredSkills}
+              onChange={(e) => setRequiredSkills(e.target.value)}
+              placeholder="e.g., React, TypeScript, System Design"
+              disabled={uploading}
+              className="w-full bg-dark-900 border border-dark-600 rounded-xl px-4 py-3 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-accent-emerald/50 focus:ring-1 focus:ring-accent-emerald/20 transition-all disabled:opacity-50"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Upload Area */}
       <div className="animate-slide-up" style={{ animationDelay: '100ms' }}>
         {!file ? (
@@ -72,10 +113,8 @@ export default function UploadPage() {
           <div className="gradient-card rounded-2xl p-6">
             {/* File preview */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-accent-blue/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 text-accent-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+              <div className="w-12 h-12 rounded-xl bg-accent-emerald/10 flex items-center justify-center flex-shrink-0">
+                <FileText className="w-6 h-6 text-accent-emerald" strokeWidth={1.5} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-white truncate">{file.name}</p>
@@ -90,9 +129,7 @@ export default function UploadPage() {
                   className="text-dark-400 hover:text-dark-200 transition-colors p-1"
                   id="remove-file-btn"
                 >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <X className="w-5 h-5" strokeWidth={2} />
                 </button>
               )}
             </div>
@@ -113,9 +150,7 @@ export default function UploadPage() {
             {/* Error */}
             {error && (
               <div className="mb-6 flex items-start gap-3 p-4 rounded-xl bg-accent-rose/5 border border-accent-rose/20">
-                <svg className="w-5 h-5 text-accent-rose flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <AlertCircle className="w-5 h-5 text-accent-rose flex-shrink-0 mt-0.5" strokeWidth={2} />
                 <div>
                   <p className="text-sm text-accent-rose font-medium">Upload Failed</p>
                   <p className="text-xs text-dark-400 mt-0.5">{error}</p>
@@ -152,12 +187,12 @@ export default function UploadPage() {
       {/* Info cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 animate-slide-up" style={{ animationDelay: '200ms' }}>
         {[
-          { icon: '🔍', title: 'Smart Parsing', desc: 'Extracts contact info, skills, and experience' },
-          { icon: '🤖', title: 'AI Analysis', desc: 'Gemini-powered scoring across 4 categories' },
-          { icon: '📊', title: 'Detailed Report', desc: 'Visual dashboard with actionable feedback' },
+          { icon: <Search className="w-5 h-5 text-dark-300" />, title: 'Smart Parsing', desc: 'Extracts contact info, skills, and experience' },
+          { icon: <Terminal className="w-5 h-5 text-dark-300" />, title: 'AI Analysis', desc: 'Context-aware scoring based on role' },
+          { icon: <BarChart2 className="w-5 h-5 text-dark-300" />, title: 'Detailed Report', desc: 'Visual dashboard with actionable feedback' },
         ].map((item) => (
-          <div key={item.title} className="gradient-card rounded-xl p-4 text-center">
-            <span className="text-2xl mb-2 block">{item.icon}</span>
+          <div key={item.title} className="bg-dark-800/50 border border-white/5 rounded-xl p-4 flex flex-col items-center text-center">
+            <span className="mb-2 bg-white/5 p-2 rounded-lg">{item.icon}</span>
             <p className="text-xs font-semibold text-dark-100 mb-0.5">{item.title}</p>
             <p className="text-[11px] text-dark-400">{item.desc}</p>
           </div>

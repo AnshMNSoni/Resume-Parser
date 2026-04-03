@@ -11,6 +11,8 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
+    const targetRole = (formData.get('targetRole') as string) || null;
+    const requiredSkills = (formData.get('requiredSkills') as string) || null;
 
     if (!file) {
       return Response.json({ error: 'No file provided' }, { status: 400 });
@@ -32,7 +34,7 @@ export async function POST(request: NextRequest) {
     const resumeData = extractResumeData(parsed.text);
 
     // Score with Gemini
-    const scores = await scoreResumeWithGemini(parsed.text);
+    const scores = await scoreResumeWithGemini(parsed.text, targetRole, requiredSkills);
 
     // Merge AI-extracted skills with regex-extracted skills
     const allSkills = [...resumeData.skills];
@@ -53,8 +55,11 @@ export async function POST(request: NextRequest) {
         linkedinUrl: resumeData.contact.linkedinUrl,
         githubUrl: resumeData.contact.githubUrl,
         portfolioUrl: resumeData.contact.portfolioUrl,
+        externalLinks: resumeData.contact.externalLinks,
         rawText: parsed.text,
         fileName: file.name,
+        targetRole,
+        requiredSkills,
         score: {
           create: {
             technicalSkills: scores.technicalSkills,

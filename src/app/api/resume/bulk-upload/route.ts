@@ -8,11 +8,11 @@ import { extractPDFsFromZip } from '@/lib/services/zip-extractor';
 import { extractResumeData } from '@/lib/services/data-extractor';
 import { scoreResumeWithGemini } from '@/lib/services/gemini-scorer';
 
-async function processResume(buffer: Buffer, fileName: string, batchId: string) {
+async function processResume(buffer: Buffer, fileName: string, batchId: string, targetRole: string | null, requiredSkills: string | null) {
   try {
     const parsed = await parsePDF(buffer);
     const resumeData = extractResumeData(parsed.text);
-    const scores = await scoreResumeWithGemini(parsed.text);
+    const scores = await scoreResumeWithGemini(parsed.text, targetRole, requiredSkills);
 
     const allSkills = [...resumeData.skills];
     const existingSkillNames = new Set(allSkills.map((s) => s.name.toLowerCase()));
@@ -31,9 +31,12 @@ async function processResume(buffer: Buffer, fileName: string, batchId: string) 
         linkedinUrl: resumeData.contact.linkedinUrl,
         githubUrl: resumeData.contact.githubUrl,
         portfolioUrl: resumeData.contact.portfolioUrl,
+        externalLinks: resumeData.contact.externalLinks,
         rawText: parsed.text,
         fileName,
         batchId,
+        targetRole,
+        requiredSkills,
         score: {
           create: {
             technicalSkills: scores.technicalSkills,
@@ -87,6 +90,8 @@ export async function POST(request: NextRequest) {
     const files = formData.getAll('files') as File[];
     const zipFile = formData.get('zip') as File | null;
     const batchName = (formData.get('batchName') as string) || 'Untitled Batch';
+    const targetRole = (formData.get('targetRole') as string) || null;
+    const requiredSkills = (formData.get('requiredSkills') as string) || null;
 
     // Guard: total upload size limit (50MB matches serverActions.bodySizeLimit)
     const MAX_TOTAL_SIZE = 50 * 1024 * 1024;
@@ -135,6 +140,8 @@ export async function POST(request: NextRequest) {
         totalResumes: pdfBuffers.length,
         processedCount: 0,
         status: 'processing',
+        targetRole,
+        requiredSkills,
       },
     });
 
@@ -146,7 +153,7 @@ export async function POST(request: NextRequest) {
     for (let i = 0; i < pdfBuffers.length; i += CONCURRENCY) {
       const chunk = pdfBuffers.slice(i, i + CONCURRENCY);
       const chunkResults = await Promise.allSettled(
-        chunk.map((pdf) => processResume(pdf.buffer, pdf.fileName, batch.id))
+        chunk.map((pdf) => processResume(pdf.buffer, pdf.fileName, batch.id, targetRole, requiredSkills))
       );
 
       for (const result of chunkResults) {

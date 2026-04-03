@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { ScoreResult, ExtractedSkill } from '@/lib/types';
+import { env } from '@/lib/env';
 
 const SCORING_PROMPT = `You are an expert technical recruiter and resume analyst. Analyze the following resume text and provide a comprehensive evaluation.
 
@@ -28,9 +29,9 @@ RESUME TEXT:
 `;
 
 export async function scoreResumeWithGemini(resumeText: string): Promise<ScoreResult> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = env.GEMINI_API_KEY;
 
-  if (!apiKey || apiKey === 'your-gemini-api-key-here') {
+  if (!apiKey) {
     console.warn('Gemini API key not configured, using fallback scoring');
     return fallbackScoring(resumeText);
   }

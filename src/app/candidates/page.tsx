@@ -173,6 +173,9 @@ function CandidatesContent() {
                   value={filters[f.key]}
                   onChange={(e) => setFilters((prev) => ({ ...prev, [f.key]: parseInt(e.target.value) }))}
                   className="w-full h-1.5 rounded-full appearance-none bg-dark-700 accent-accent-emerald cursor-pointer"
+                  style={{
+                    background: `linear-gradient(to right, var(--color-accent-emerald) ${filters[f.key]}%, rgba(255, 255, 255, 0.05) ${filters[f.key]}%)`
+                  }}
                 />
               </div>
             ))}

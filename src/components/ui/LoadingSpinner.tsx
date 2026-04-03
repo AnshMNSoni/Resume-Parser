@@ -14,7 +14,7 @@ export function LoadingSpinner({
   return (
     <div className={`flex items-center justify-center ${className}`}>
       <div
-        className={`${sizeClasses[size]} rounded-full border-2 border-dark-600 border-t-accent-blue animate-spin`}
+        className={`${sizeClasses[size]} rounded-full border-2 border-dark-600/50 border-t-accent-emerald animate-spin glow-emerald`}
       />
     </div>
   );
@@ -24,10 +24,10 @@ export function PageLoader() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
       <div className="relative">
-        <div className="w-16 h-16 rounded-full border-2 border-dark-600 border-t-accent-blue animate-spin" />
-        <div className="absolute inset-2 rounded-full border-2 border-dark-700 border-b-accent-purple animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }} />
+        <div className="w-16 h-16 rounded-full border-2 border-dark-600/50 border-t-accent-emerald animate-spin glow-emerald" />
+        <div className="absolute inset-2 rounded-full border-2 border-dark-700/50 border-b-accent-teal animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }} />
       </div>
-      <p className="text-sm text-dark-400 animate-pulse">Processing...</p>
+      <p className="text-sm text-accent-emerald animate-pulse">Processing...</p>
     </div>
   );
 }

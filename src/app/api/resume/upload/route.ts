@@ -1,3 +1,6 @@
+export const runtime = 'nodejs';
+export const maxDuration = 60;
+
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { parsePDF } from '@/lib/services/pdf-parser';
@@ -97,7 +100,31 @@ export async function POST(request: NextRequest) {
     return Response.json({ success: true, candidate }, { status: 201 });
   } catch (error) {
     console.error('Upload error:', error);
-    const message = error instanceof Error ? error.message : 'Failed to process resume';
-    return Response.json({ error: message }, { status: 500 });
+
+    if (error instanceof Error) {
+      // User-recoverable errors (bad input)
+      if (
+        error.message.includes('empty') ||
+        error.message.includes('too large') ||
+        error.message.includes('no extractable text')
+      ) {
+        return Response.json({ error: error.message }, { status: 422 });
+      }
+      // Server configuration issues
+      if (
+        error.message.includes('DATABASE_URL') ||
+        error.message.includes('GEMINI_API_KEY')
+      ) {
+        return Response.json(
+          { error: 'Server configuration error. Please contact the administrator.' },
+          { status: 503 }
+        );
+      }
+    }
+
+    return Response.json(
+      { error: 'Failed to process resume. Please try again.' },
+      { status: 500 }
+    );
   }
 }

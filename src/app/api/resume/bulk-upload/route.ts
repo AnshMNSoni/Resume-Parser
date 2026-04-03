@@ -1,3 +1,6 @@
+export const runtime = 'nodejs';
+export const maxDuration = 300;
+
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { parsePDF } from '@/lib/services/pdf-parser';
@@ -70,7 +73,11 @@ async function processResume(buffer: Buffer, fileName: string, batchId: string) 
     return { success: true, fileName };
   } catch (error) {
     console.error(`Failed to process ${fileName}:`, error);
-    return { success: false, fileName, error: error instanceof Error ? error.message : 'Unknown error' };
+    return {
+      success: false,
+      fileName,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }
 
@@ -80,6 +87,22 @@ export async function POST(request: NextRequest) {
     const files = formData.getAll('files') as File[];
     const zipFile = formData.get('zip') as File | null;
     const batchName = (formData.get('batchName') as string) || 'Untitled Batch';
+
+    // Guard: total upload size limit (50MB matches serverActions.bodySizeLimit)
+    const MAX_TOTAL_SIZE = 50 * 1024 * 1024;
+    let totalSize = 0;
+
+    if (zipFile) totalSize += zipFile.size;
+    for (const file of files) totalSize += file.size;
+
+    if (totalSize > MAX_TOTAL_SIZE) {
+      return Response.json(
+        {
+          error: `Total upload size (${(totalSize / 1024 / 1024).toFixed(1)}MB) exceeds 50MB limit`,
+        },
+        { status: 413 }
+      );
+    }
 
     const pdfBuffers: { fileName: string; buffer: Buffer }[] = [];
 
@@ -131,7 +154,11 @@ export async function POST(request: NextRequest) {
           results.push(result.value);
           if (result.value.success) processedCount++;
         } else {
-          results.push({ success: false, fileName: 'unknown', error: 'Processing failed' });
+          results.push({
+            success: false,
+            fileName: 'unknown',
+            error: 'Processing failed',
+          });
         }
       }
 
@@ -146,22 +173,42 @@ export async function POST(request: NextRequest) {
     await prisma.batchUpload.update({
       where: { id: batch.id },
       data: {
-        status: processedCount === pdfBuffers.length ? 'completed' : 'completed_with_errors',
+        status:
+          processedCount === pdfBuffers.length
+            ? 'completed'
+            : 'completed_with_errors',
         processedCount,
       },
     });
 
-    return Response.json({
-      success: true,
-      batchId: batch.id,
-      total: pdfBuffers.length,
-      processed: processedCount,
-      failed: pdfBuffers.length - processedCount,
-      results,
-    }, { status: 201 });
+    return Response.json(
+      {
+        success: true,
+        batchId: batch.id,
+        total: pdfBuffers.length,
+        processed: processedCount,
+        failed: pdfBuffers.length - processedCount,
+        results,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Bulk upload error:', error);
-    const message = error instanceof Error ? error.message : 'Failed to process resumes';
+
+    if (error instanceof Error) {
+      if (
+        error.message.includes('DATABASE_URL') ||
+        error.message.includes('GEMINI_API_KEY')
+      ) {
+        return Response.json(
+          { error: 'Server configuration error. Please contact the administrator.' },
+          { status: 503 }
+        );
+      }
+    }
+
+    const message =
+      error instanceof Error ? error.message : 'Failed to process resumes';
     return Response.json({ error: message }, { status: 500 });
   }
 }
